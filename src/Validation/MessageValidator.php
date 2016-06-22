@@ -31,29 +31,37 @@ class MessageValidator implements MessageValidatorInterface
 
         return $this;
     }
-    
+
     public function loop($edifact, $blueprint)
     {
-        $blueprintCount = 0;
+        $blueprintValidator = new Blueprint($blueprint);
         while ($line = $edifact->getNextSegment()) {
-            // Gratz, Validation ist für die teilmenge erfolgreich durchgelaufen, gebe anzahl der durchläufe zurück
-            if ($this->endOfBlueprint($blueprint, $blueprintCount)) {
-                return;
-            }
-            $this->validateSegment($line);
-            $this->validateAgainstBlueprint($edifact, $line, @$blueprint[$blueprintCount]);
-            
-            if ($this->isSubSegmentReloop($blueprint, $blueprintCount)) {
-                $this->reLoopSubSegments($edifact, $blueprint, $blueprintCount);
-            } elseif ($this->isSingleSegmentReloop($edifact, $blueprint, $blueprintCount)) {
-                $blueprintCount--;
-            }
-
-            $this->lineCount++;
-            $blueprintCount++;
-            $edifact->pinPointer();
+            $blueprintValidator->validate($line);
         }
     }
+    
+    //public function loop($edifact, $blueprint)
+    //{
+    //    $blueprintCount = 0;
+    //    while ($line = $edifact->getNextSegment()) {
+    //        // Gratz, Validation ist für die teilmenge erfolgreich durchgelaufen, gebe anzahl der durchläufe zurück
+    //        if ($this->endOfBlueprint($blueprint, $blueprintCount)) {
+    //            return;
+    //        }
+    //        $this->validateSegment($line);
+    //        $this->validateAgainstBlueprint($edifact, $line, @$blueprint[$blueprintCount]);
+    //        
+    //        if ($this->isSubSegmentReloop($blueprint, $blueprintCount)) {
+    //            $this->reLoopSubSegments($edifact, $blueprint, $blueprintCount);
+    //        } elseif ($this->isSingleSegmentReloop($edifact, $blueprint, $blueprintCount)) {
+    //            $blueprintCount--;
+    //        }
+
+    //        $this->lineCount++;
+    //        $blueprintCount++;
+    //        $edifact->pinPointer();
+    //    }
+    //}
 
     private function endOfBlueprint($blueprint, $blueprintCount)
     {

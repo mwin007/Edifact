@@ -10,6 +10,34 @@ use Proengeno\Edifact\Exceptions\ValidationException;
 class MessageValidatorTest extends TestCase 
 {
     /** @test */
+    public function it_temp()
+    {
+        $validator = new MessageValidator;
+        
+        $edifactMessage = Message::fromString(
+            "UNA:+.? '" .
+                "UNH'BGM'" .
+                    "LIN'DTM'LIN'DTM'" . 
+                "UNS'UNT'" .
+                "UNH'BGM'" .
+                    "LIN'DTM'LIN'DTM'" . 
+                "UNS'UNT'" .
+            "UNZ"
+        );
+        $edifactMessage = Message::fromString(
+            "UNA:+.? '" .
+                "UNH+1+MSG:D:11A:UN:5.1e'BGM+380+9'" .
+                    "LIN+1'DTM+137:201604221414:203'LIN+1'DTM+137:201604221414:203'" . 
+                "UNS+D'UNT+18+2'" .
+                "UNH'BGM'" .
+                    "LIN'DTM'LIN'DTM'" . 
+                "UNS'UNT'" .
+            "UNZ"
+        );
+        $validator->validate($edifactMessage);
+    }
+
+    /** @test */
     public function it_can_vaildate_a_message_without_reloops()
     {
         $validator = new MessageValidator;
@@ -32,7 +60,7 @@ class MessageValidatorTest extends TestCase
     {
         $validator = new MessageValidator;
         
-        $edifactMessage = Message::fromString("UNA:+.? 'UNH+1+MSG:D:11A:UN:5.1e'BGM+380+9'LIN+1'DTM+137:201604221414:203'LIN+1'DTM+137:201604221414:203'UNS+D'UNT+18+2'UNH+1+MSG:D:11A:UN:5.1e'BGM+380+9'LIN+1'DTM+137:201604221414:203'LIN+1'DTM+137:201604221414:203'UNS+D'UNT+18+2'UNZ+4+6910995E'UNZ+4+6910995E'");
+        $edifactMessage = Message::fromString("UNA:+.? 'UNH+1+MSG:D:11A:UN:5.1e'BGM+380+9'LIN+1'DTM+137:201604221414:203'LIN+1'DTM+137:201604221414:203'UNS+D'UNT+18+2'UNH+1+MSG:D:11A:UN:5.1e'BGM+380+9'LIN+1'DTM+137:201604221414:203'LIN+1'DTM+137:201604221414:203'UNS+D'UNT+18+2'UNZ+4+6910995E'");
         $validator->validate($edifactMessage);
     }
 
